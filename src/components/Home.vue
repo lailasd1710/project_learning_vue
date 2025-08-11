@@ -64,7 +64,7 @@
           <v-text-field
             label="Current Password"
             :type="showCurrentPassword ? 'text' : 'password'"
-            v-model="currentPassword"
+            v-model="old_password"
             variant="outlined"
             color="#3b82f6"
             :append-inner-icon="showCurrentPassword ? 'mdi-eye' : ' mdi-eye-off'"
@@ -73,7 +73,7 @@
           <v-text-field
             label="New Password"
             :type="showNewPassword ? 'text' : 'password'"
-            v-model="newPassword"
+            v-model="new_password"
             variant="outlined"
             color="#3b82f6"
             :append-inner-icon="showNewPassword ? 'mdi-eye' : ' mdi-eye-off'"
@@ -97,16 +97,13 @@
 </template>
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router' // استيراد useRouter
+import { useRouter } from 'vue-router'
+import axios from 'axios'
 
 const drawer = ref(true)
-const childrenRequestOpen = ref(false)
-const ourSchoolOpen = ref(false)
-const basmaMarketOpen = ref(false)
-
 const changePasswordDialog = ref(false)
-const currentPassword = ref('')
-const newPassword = ref('')
+const old_password = ref('')
+const new_password = ref('')
 const logoutAfterChange = ref(false)
 const showCurrentPassword = ref(false)
 const showNewPassword = ref(false)
@@ -123,8 +120,8 @@ function openChangePasswordDialog() {
 
 function closeChangePasswordDialog() {
   changePasswordDialog.value = false
-  currentPassword.value = ''
-  newPassword.value = ''
+  old_password.value = ''
+  new_password.value = ''
   logoutAfterChange.value = false
   showCurrentPassword.value = false
   showNewPassword.value = false
@@ -132,10 +129,20 @@ function closeChangePasswordDialog() {
 
 async function changePassword() {
   try {
-    const response = await post('https://basma.icu/api/change/change_password', {
-      current_password: currentPassword.value,
-      new_password: newPassword.value,
-    })
+    const token = localStorage.getItem('token')
+    const response = await axios.post(
+      'http://127.0.0.1:8000/api/change-password',
+      {
+        old_password: old_password.value,
+        new_password: new_password.value,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // إرسال التوكن في الهيدر
+        },
+      },
+    )
+
     snackbarMessage.value = 'Password changed successfully'
     snackbar.value = true
     if (logoutAfterChange.value) {
@@ -150,9 +157,16 @@ async function changePassword() {
 
 async function logout() {
   try {
-    const response = await post('https://basma.icu/api/logout', {})
-    window.localStorage.removeItem('token')
-    window.location.href = '/'
+    const token = localStorage.getItem('token')
+    await axios.post(
+      'http://127.0.0.1:8000/api/logout',
+      {},
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
+    )
+    localStorage.removeItem('token')
+    window.location.href = '/login'
   } catch (error) {
     console.error('Logout failed:', error)
   }

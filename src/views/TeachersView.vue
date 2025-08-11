@@ -6,8 +6,8 @@
       :headers="headers"
       :userData="teachers"
       @deleteTeacher="deleteTeacher"
-      @teacherAdded="showSnackbar('Teacher added successfully')"
-      @teacherDeleted="showSnackbar('Teacher deleted successfully')"
+      @teacherAdded="getTeacher"
+      @teacherDeleted="getTeacher"
       ref="teacherRef"
     />
     <!-- Button to Add Teacher -->
@@ -124,7 +124,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref } from 'vue'
 import Teacher from '@/components/Teacher.vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
@@ -221,9 +221,6 @@ const addNewTeacher = async () => {
   }
 }
 
-// Select / deselect helpers (omitted for brevity)
-
-// Approve / reject subject requests
 // Approve subject request
 const acceptRequest = async (id) => {
   try {
@@ -234,14 +231,12 @@ const acceptRequest = async (id) => {
       { status: 'accept' },
       { headers: { Authorization: `Bearer ${token}` } },
     )
-    // نحدّث الحالة محليًا بناء على ردّ السيرفر
-    subjectRequests.value = subjectRequests.value.map((req) =>
-      req.id === id ? { ...req, status: data.status } : req,
-    )
-    showSnackbar('تم قبول الطلب')
+    subjectRequests.value = subjectRequests.value.filter((req) => req.id !== id)
+
+    showSnackbar('subject accepted')
   } catch (error) {
     console.error('Error accepting request:', error)
-    showSnackbar('فشل قبول الطلب')
+    showSnackbar(' failed to accept')
   }
 }
 
@@ -255,13 +250,12 @@ const rejectRequest = async (id) => {
       { status: 'reject' },
       { headers: { Authorization: `Bearer ${token}` } },
     )
-    subjectRequests.value = subjectRequests.value.map((req) =>
-      req.id === id ? { ...req, status: data.status } : req,
-    )
-    showSnackbar('تم رفض الطلب')
+    subjectRequests.value = subjectRequests.value.filter((req) => req.id !== id)
+
+    showSnackbar('subject rejected')
   } catch (error) {
     console.error('Error rejecting request:', error)
-    showSnackbar('فشل رفض الطلب')
+    showSnackbar('reject failed ')
   }
 }
 
