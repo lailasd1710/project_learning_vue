@@ -2,10 +2,10 @@
   <v-data-table :headers="headers" :items="userData" class="elevation-3" item-key="id">
     <!-- eslint-disable-next-line vue/valid-v-slot -->
     <template v-slot:item.actions="{ item }">
-      <v-btn size="small" class="custom-button" @click="deleteItem(item)" color="#3b82f6"
+      <v-btn size="small" class="custom-button" @click="deleteItem(item)" color="#ef4444"
         >Delete</v-btn
       >
-      <v-btn size="small" class="custom-buttonb" @click="viewDetails(item)" color="#679fc2"
+      <v-btn size="small" class="custom-buttonb" @click="viewDetails(item)" color="#f59e0b"
         >Details</v-btn
       >
     </template>
@@ -18,7 +18,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="#3b82f6" variant="text" @click="closeDelete">Cancel</v-btn>
-        <v-btn color="#98c242" variant="text" @click="deleteItemConfirm">OK</v-btn>
+        <v-btn color="#ef4444" variant="text" @click="deleteItemConfirm">OK</v-btn>
         <v-spacer></v-spacer>
       </v-card-actions>
     </v-card>
@@ -114,7 +114,7 @@ watch(dialogDelete, (val) => !val && closeDelete())
 
 <style scoped>
 .custom-button {
-  background-color: #50c1eb !important;
+  background-color: #ef4444 !important;
   color: white !important;
   transition: transform 0.2s;
   border-radius: 25px;
@@ -160,7 +160,7 @@ watch(dialogDelete, (val) => !val && closeDelete())
 }
 
 .custom-buttonb {
-  background-color: #98c242 !important;
+  background-color: #f59e0b !important;
   color: white !important;
   transition: transform 0.2s;
   border-radius: 25px;

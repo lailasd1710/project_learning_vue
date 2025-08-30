@@ -19,6 +19,11 @@ const router = createRouter({
       component: () => import('../views/HomeView.vue'),
       children: [
         {
+          path: 'dash',
+          name: 'dashboard',
+          component: () => import('../views/DashboardView.vue'),
+        },
+        {
           path: 'teachers',
           name: 'teachers',
           component: () => import('../views/TeachersView.vue'),
@@ -37,6 +42,11 @@ const router = createRouter({
           path: 'subjects',
           name: 'subjects',
           component: () => import('../views/SubjectsView.vue'),
+        },
+        {
+          path: 'lessons',
+          name: 'lessons',
+          component: () => import('../views/LessonsView.vue'),
         },
         {
           path: 'reports',

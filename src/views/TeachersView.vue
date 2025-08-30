@@ -13,7 +13,7 @@
     <!-- Button to Add Teacher -->
     <v-dialog v-model="dialog" persistent style="max-width: 750px; margin: auto">
       <template v-slot:activator="{ props }">
-        <v-btn v-bind="props" class="button-add" color="#3b82f6" size="60">
+        <v-btn v-bind="props" class="fab fab-right" color="#3b82f6" size="60">
           <v-icon color="white" size="30"> mdi-plus-thick </v-icon>
         </v-btn>
       </template>
@@ -112,8 +112,10 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <div class="fixed-bottom-right">
-      <v-btn color="#3b82f6" @click="showRequestsDialog = true"> Subjects Request </v-btn>
+    <div>
+      <v-btn color="#10b981" @click="showRequestsDialog = true" class="fab fab-left" size="60"
+        ><v-icon color="white" size="30">mdi-archive-arrow-down-outline</v-icon>
+      </v-btn>
     </div>
 
     <!-- Snackbar -->
@@ -148,7 +150,7 @@ const newUser = ref({
 
 // table headers
 const headers = ref([
-  { text: '', align: 'center', value: 'select', sortable: false },
+  { text: '', align: 'center' },
   { title: 'Name', key: 'name' },
   { title: 'Phone', key: 'phone' },
   { title: 'email', key: 'email' },
@@ -278,7 +280,6 @@ onMounted(() => {
   background-color: #3b82f6 !important;
   color: white !important;
   transition: transform 0.2s;
-  border-radius: 25px;
 }
 
 .custom-button:hover {
@@ -322,5 +323,24 @@ onMounted(() => {
   left: 0.4cm !important;
   border-radius: 50%;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.7);
+}
+.fab {
+  position: fixed !important;
+  bottom: 0.4cm;
+  width: 60px;
+  height: 60px;
+  border-radius: 50% !important; /* أهم سطر للتدوير */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
+  z-index: 1000; /* ليتفوّق على المحتوى */
+}
+
+.fab-right {
+  right: 0.4cm !important;
+}
+.fab-left {
+  right: 2.6cm !important;
 }
 </style>

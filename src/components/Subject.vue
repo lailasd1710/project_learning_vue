@@ -11,13 +11,13 @@
     </template>
   </v-data-table>
   <!-- Button to edit Subject -->
-  <v-dialog v-model="dialog" persistent style="max-width: 750px; margin: auto">
+  <v-dialog v-model="dialog" persistent style="max-width: 500px; margin: auto">
     <v-card persistent>
       <v-card-title style="color: #3b82f6; text-align: center"> Edit Subjects</v-card-title>
       <v-card-text>
         <v-container>
           <v-row>
-            <v-col cols="12" sm="6" md="6">
+            <v-col>
               <v-text-field
                 variant="outlined"
                 color="#3b82f6"
@@ -27,7 +27,7 @@
               ></v-text-field> </v-col
           ></v-row>
           <v-row>
-            <v-col cols="12" sm="6" md="6">
+            <v-col>
               <v-text-field
                 variant="outlined"
                 color="#3b82f6"
@@ -53,7 +53,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="#3b82f6" variant="text" @click="closeDelete">Cancel</v-btn>
-        <v-btn color="#98c242" variant="text" @click="deleteItemConfirm">OK</v-btn>
+        <v-btn color="#ef4444" variant="text" @click="deleteItemConfirm">OK</v-btn>
         <v-spacer></v-spacer>
       </v-card-actions>
     </v-card>
@@ -185,7 +185,7 @@ watch(dialogDelete, (val) => !val && closeDelete())
 
 <style scoped>
 .custom-button {
-  background-color: #50c1eb !important;
+  background-color: #ef4444 !important;
   color: white !important;
   transition: transform 0.2s;
   border-radius: 25px;
@@ -200,7 +200,7 @@ watch(dialogDelete, (val) => !val && closeDelete())
   transform: scale(0.95);
 }
 .custom-buttonS {
-  background-color: #ddbd2e !important;
+  background-color: #f59e0b !important;
   color: white !important;
   transition: transform 0.2s;
   border-radius: 25px;
@@ -231,7 +231,7 @@ watch(dialogDelete, (val) => !val && closeDelete())
 }
 
 .custom-buttonb {
-  background-color: #98c242 !important;
+  background-color: #f59e0b !important;
   color: white !important;
   transition: transform 0.2s;
   border-radius: 25px;

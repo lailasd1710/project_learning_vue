@@ -65,13 +65,13 @@ export default {
           router.push('/home')
         } else {
           snackbarMessage.value = 'The information is incorrect '
-          snackbarColor.value = '#3b82f6' // لون أرجواني عند الفشل
+          snackbarColor.value = '#ef4444' // لون أرجواني عند الفشل
           snackbar.value = true
         }
       } catch (error) {
         console.error('Error during login:', error)
         snackbarMessage.value = 'The information is incorrect  '
-        snackbarColor.value = '#b271a7' // لون أرجواني عند الفشل
+        snackbarColor.value = '#ef4444' // لون أرجواني عند الفشل
         snackbar.value = true
       }
     }

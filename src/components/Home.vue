@@ -1,39 +1,22 @@
 <template>
   <div class="bars">
-    <v-navigation-drawer v-model="drawer" permanent elevation="5">
+    <v-navigation-drawer v-model="drawer" permanent elevation="5" color="#ffffff">
       <v-list-item>
-        <v-img src="@/assets/basma1.jpg" class="mx-auto my-1" height="120" width="120" />
+        <v-img src="/images/default-teacher.png" class="mx-auto my-1" height="120" width="120" />
       </v-list-item>
 
-      <v-divider :thickness="2" class="border-opacity-65" color="#b174b0"></v-divider>
+      <v-divider :thickness="2" class="border-opacity-65" color="#e5e7eb"></v-divider>
 
       <v-list density="compact" nav>
         <v-list-item
-          style="color: teal"
+          style="color: #3b82f6"
           prepend-icon="mdi-view-dashboard-outline"
-          to="/home"
-          value="home"
+          to="/home/dash"
+          value="dashboard"
           >Dashboard</v-list-item
         >
-
         <v-list-item
-          style="color: teal"
-          prepend-icon="mdi-human-male-board"
-          to="/home/teachers"
-          value="teachers"
-          >Teachers</v-list-item
-        >
-        <v-list-item
-          style="color: teal"
-          prepend-icon="mdi-account-school-outline"
-          to="/home/students"
-          value="students"
-        >
-          Students
-        </v-list-item>
-
-        <v-list-item
-          style="color: teal"
+          style="color: #3b82f6"
           prepend-icon="mdi-text-long"
           to="/home/subjects"
           value="subjects"
@@ -41,7 +24,30 @@
           Subjects
         </v-list-item>
         <v-list-item
-          style="color: teal"
+          style="color: #3b82f6"
+          prepend-icon="mdi-human-male-board"
+          to="/home/teachers"
+          value="teachers"
+          >Teachers</v-list-item
+        >
+        <v-list-item
+          style="color: #3b82f6"
+          prepend-icon="mdi-account-school-outline"
+          to="/home/students"
+          value="students"
+        >
+          Students
+        </v-list-item>
+        <v-list-item
+          style="color: #3b82f6"
+          prepend-icon="mdi-text-long"
+          to="/home/lessons"
+          value="lessons"
+        >
+          Lessons
+        </v-list-item>
+        <v-list-item
+          style="color: #3b82f6"
           prepend-icon="mdi-chart-box-outline"
           to="/home/reports"
           value="reports"
@@ -50,7 +56,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar :elevation="3" color="#fff" scroll-behavior="fade-image">
+    <v-app-bar :elevation="3" color="#ffffff" scroll-behavior="fade-image">
       <v-spacer></v-spacer>
       <v-btn @click="openChangePasswordDialog" icon="mdi-lock" color="#3b82f6"></v-btn>
       <v-btn @click="logout" icon="mdi-logout" color="#3b82f6"></v-btn>
@@ -58,8 +64,10 @@
 
     <!-- Dialog for changing password -->
     <v-dialog v-model="changePasswordDialog" max-width="500px">
-      <v-card color="#fff" class="pa-5">
-        <v-card-title class="headline" style="text-align: center">Hello, Admin</v-card-title>
+      <v-card color="#ffffff" class="pa-5">
+        <v-card-title class="headline" style="text-align: center; color: #0f172a"
+          >Hello, Admin</v-card-title
+        >
         <v-card-text>
           <v-text-field
             label="Current Password"
@@ -90,11 +98,12 @@
     </v-dialog>
 
     <!-- Snackbar for notifications -->
-    <v-snackbar v-model="snackbar" color="#b271a7" class="white-text" :timeout="3000" top>
+    <v-snackbar v-model="snackbar" :color="snackbarColor" class="white-text" :timeout="3000" top>
       {{ snackbarMessage }}
     </v-snackbar>
   </div>
 </template>
+
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
@@ -110,6 +119,8 @@ const showNewPassword = ref(false)
 
 const snackbar = ref(false)
 const snackbarMessage = ref('')
+const snackbarColor = ref('#10b981') // Success افتراضي
+
 const loginDialog = ref(false)
 
 const router = useRouter() // إنشاء متغير router
@@ -130,7 +141,7 @@ function closeChangePasswordDialog() {
 async function changePassword() {
   try {
     const token = localStorage.getItem('token')
-    const response = await axios.post(
+    await axios.post(
       'http://127.0.0.1:8000/api/change-password',
       {
         old_password: old_password.value,
@@ -138,19 +149,23 @@ async function changePassword() {
       },
       {
         headers: {
-          Authorization: `Bearer ${token}`, // إرسال التوكن في الهيدر
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
         },
       },
     )
 
     snackbarMessage.value = 'Password changed successfully'
+    snackbarColor.value = '#10b981' // Success
     snackbar.value = true
+
     if (logoutAfterChange.value) {
       await logout()
     }
     closeChangePasswordDialog()
   } catch (error) {
     snackbarMessage.value = 'Failed to change password'
+    snackbarColor.value = '#ef4444' // Error
     snackbar.value = true
   }
 }
@@ -158,17 +173,22 @@ async function changePassword() {
 async function logout() {
   try {
     const token = localStorage.getItem('token')
-    await axios.post(
+    await axios.get(
       'http://127.0.0.1:8000/api/logout',
       {},
       {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+        },
       },
     )
-    localStorage.removeItem('token')
-    window.location.href = '/login'
   } catch (error) {
     console.error('Logout failed:', error)
+  } finally {
+    // إزالة التوكن دائماً والتحويل لصفحة اللوجن
+    localStorage.removeItem('token')
+    router.push('/')
   }
 }
 
@@ -189,9 +209,22 @@ onMounted(() => {
 </script>
 
 <style>
+/* Palette:
+Primary: #3b82f6
+Success: #10b981
+Warning: #f59e0b
+Error: #ef4444
+Text Primary: #0f172a
+Text Secondary: #475569
+Border: #e5e7eb
+Surface / Card: #ffffff
+Background: #f8fafc
+Muted: #94a3b8
+*/
+
 .custom-button {
-  background-color: #3b82f6 !important;
-  color: white !important;
+  background-color: #94a3b8 !important;
+  color: #ffffff !important;
   transition: transform 0.2s;
   border-radius: 25px;
 }
@@ -203,8 +236,9 @@ onMounted(() => {
 .custom-button:active {
   transform: scale(0.95);
 }
+
 .custom-buttonC {
-  background-color: #5a626e !important;
+  background-color: #859dbf !important; /* زر ثانوي كما هو */
   color: white !important;
   transition: transform 0.2s;
   border-radius: 25px;
@@ -217,21 +251,35 @@ onMounted(() => {
 .custom-buttonC:active {
   transform: scale(0.95);
 }
+
 .v-list-item {
   cursor: pointer;
+  /* نصوص القائمة */
+  color: #3b82f6 !important;
 }
+
 .sub-item {
   font-size: 0.9rem;
   margin-left: 56px;
-  color: #98c242 !important;
+  color: #94a3b8 !important; /* Muted */
   transition: transform 0.3s ease-in-out;
+}
+
+/* خلفية عامة ونصوص */
+body {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+/* تخصيص الحواف/الحدود العامة عند الحاجة */
+hr,
+.v-divider {
+  border-color: #e5e7eb !important;
 }
 </style>
 
 <script>
 export default {
-  components() {
-    name: Home
-  },
+  name: 'Home',
 }
 </script>

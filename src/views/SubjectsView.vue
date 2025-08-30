@@ -10,7 +10,7 @@
       ref="teacherRef"
     />
     <!-- Button to Add Teacher -->
-    <v-dialog v-model="dialog" persistent style="max-width: 750px; margin: auto">
+    <v-dialog v-model="dialog" persistent style="max-width: 500px; margin: auto">
       <template v-slot:activator="{ props }">
         <v-btn v-bind="props" class="button-add" color="#3b82f6" size="60">
           <v-icon color="white" size="30"> mdi-plus-thick </v-icon>
@@ -21,7 +21,7 @@
         <v-card-text>
           <v-container>
             <v-row>
-              <v-col cols="12" sm="6" md="6">
+              <v-col>
                 <v-text-field
                   variant="outlined"
                   color="#3b82f6"
@@ -31,7 +31,7 @@
                 ></v-text-field> </v-col
             ></v-row>
             <v-row>
-              <v-col cols="12" sm="6" md="6">
+              <v-col>
                 <v-text-field
                   variant="outlined"
                   color="#3b82f6"
