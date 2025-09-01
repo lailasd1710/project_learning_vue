@@ -1,1 +1,1 @@
-<template><h1>this is lessonshgjhsbljdgijsgcksjabdkasjhbj</h1></template>
+<template><h1>lessons </h1></template>

@@ -84,27 +84,7 @@
             </div>
           </v-col>
 
-          <v-col cols="12" md="4">
-            <div class="summary-card border-error">
-              <div class="summary-title">
-                Rejected
-                <v-chip class="chip-soft chip-error" size="small">
-                  {{ rejectedSubjects.length }}
-                </v-chip>
-              </div>
-              <div class="chip-stack">
-                <v-chip
-                  v-for="(s, i) in rejectedSubjects"
-                  :key="'r' + i"
-                  class="chip-soft chip-error"
-                  size="small"
-                >
-                  {{ s }}
-                </v-chip>
-                <p v-if="!rejectedSubjects.length" class="muted-text">لا يوجد مواد مرفوضة</p>
-              </div>
-            </div>
-          </v-col>
+        
         </v-row>
       </v-card-text>
     </v-card>
@@ -174,10 +154,27 @@ const getTeacherDetails = async () => {
       (Array.isArray(teacher.value?.subjects) && teacher.value.subjects) ||
       []
 
-    const { acc, pen, rej } = splitSubjectsByStatus(candidates)
-    acceptedSubjects.value = acc
-    pendingSubjects.value = pen
-    rejectedSubjects.value = rej
+    
+if (data.subjects && typeof data.subjects === 'object') {
+  // نملأ accepted/pending مباشرة ونمسح المرفوضة
+  const { accepted = [], pending = [] } = data.subjects
+  acceptedSubjects.value = accepted.map(s => s.title || s.subject_name || s)
+  pendingSubjects.value  = pending .map(s => s.title || s.subject_name || s)
+
+}
+else {
+  // fallback على الحالة القديمة
+  const arr =
+    Array.isArray(data.subjects)        ? data.subjects        :
+    Array.isArray(data.data?.subjects) ? data.data.subjects   :
+    Array.isArray(data.teacher?.subjects)
+                                       ? data.teacher.subjects
+                                       : []
+  const { acc, pen } = splitSubjectsByStatus(arr)
+  acceptedSubjects.value = acc
+  pendingSubjects.value  = pen
+}
+
 
     imageUrl.value = teacher.value.user_image || teacher.value.image || ''
   } catch (error) {

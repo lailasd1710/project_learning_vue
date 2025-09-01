@@ -154,6 +154,7 @@ const headers = ref([
   { title: 'Name', key: 'name' },
   { title: 'Phone', key: 'phone' },
   { title: 'email', key: 'email' },
+  {title: 'rate', key:'ratings_count'},
   { title: '', key: 'actions', sortable: false },
 ])
 

@@ -1,12 +1,12 @@
 <template>
   <v-container class="reports">
-    <v-row style="color: #b271a7" class="d-flex flex-wrap justify-center">
-      <h1>Select a time Range</h1>
+    <v-row style="color: #3b82f6" class="d-flex flex-wrap justify-center">
+      <h1>Reports</h1>
     </v-row>
 
     <v-row>
       <v-col>
-        <h2 style="color: #50c1eb">Start</h2>
+        <h2 style="color: #3b82f6">Start</h2>
         <VueDatePicker
           v-model="RangeDate.start_date"
           :max="RangeDate.end_date"
@@ -14,7 +14,7 @@
         ></VueDatePicker>
       </v-col>
       <v-col>
-        <h2 style="color: #50c1eb">End</h2>
+        <h2 style="color: #3b82f6">End</h2>
         <VueDatePicker
           v-model="RangeDate.end_date"
           :min="RangeDate.start_date"
@@ -35,32 +35,22 @@
       <v-table fixed-header class="data-table my-8 mx-8" width="100%">
         <thead>
           <tr>
-            <th class="text-left table-header">Product Name</th>
-            <th class="text-left table-header">Sale Date</th>
-            <th class="text-left table-header">Representative Name</th>
-            <th class="text-left table-header">Price</th>
+            <th class="text-left table-header">Name</th>
+            <th class="text-left table-header">type</th>
+            <th class="text-left table-header">phone</th>
+            <th class="text-left table-header">email</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="item in bills" :key="item.id">
-            <td>{{ item.product_name }}</td>
-            <td>{{ item.sale_date }}</td>
-            <td>{{ item.representative_name }}</td>
-            <td>{{ item.price }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.type }}</td>
+            <td>{{ item.phone }}</td>
+            <td>{{ item.email }}</td>
           </tr>
         </tbody>
       </v-table>
     </v-row>
-
-    <v-row class="d-flex flex-wrap justify-center">
-      <v-card elevation="1" width="30%" class="summary-card mx-6 my-7 py-8">
-        <h2 class="summary-text">Total Records: {{ totalRecords }}</h2>
-      </v-card>
-      <v-card elevation="1" width="30%" class="summary-card mx-6 my-7 py-8">
-        <h2 class="summary-text">Total Price: {{ totalPrice }}</h2>
-      </v-card>
-    </v-row>
-
     <v-row class="d-flex flex-wrap justify-center">
       <v-snackbar v-model="snackbar" color="red" timeout="3000">
         {{ snackbarMessage }}
@@ -78,8 +68,6 @@ const RangeDate = ref({
 })
 
 const bills = ref([])
-const totalRecords = ref(0)
-const totalPrice = ref(0)
 const snackbar = ref(false)
 const snackbarMessage = ref('')
 
@@ -116,7 +104,7 @@ const validateAndFetchData = async () => {
 
 <style>
 .custom-btn {
-  background-color: #98c242;
+  background-color: #3b82f6;
   color: white;
   transition:
     transform 0.2s ease,

@@ -58,8 +58,8 @@
 
     <v-app-bar :elevation="3" color="#ffffff" scroll-behavior="fade-image">
       <v-spacer></v-spacer>
-      <v-btn @click="openChangePasswordDialog" icon="mdi-lock" color="#3b82f6"></v-btn>
-      <v-btn @click="logout" icon="mdi-logout" color="#3b82f6"></v-btn>
+      <v-btn @click="openChangePasswordDialog" icon="mdi-lock" color="#0f172a"></v-btn>
+      <v-btn @click="logout" icon="mdi-logout" color="#0f172a"></v-btn>
     </v-app-bar>
 
     <!-- Dialog for changing password -->
@@ -255,7 +255,7 @@ Muted: #94a3b8
 .v-list-item {
   cursor: pointer;
   /* نصوص القائمة */
-  color: #3b82f6 !important;
+  color: #0f172a !important;
 }
 
 .sub-item {
