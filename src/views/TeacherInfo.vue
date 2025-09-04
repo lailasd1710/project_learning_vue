@@ -96,6 +96,8 @@ import { onMounted, ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
 import logo from '../assets/logo.svg'
+import {getApi} from '@/BaseUrl'
+const { url } = getApi()
 const route = useRoute()
 const teacher = ref({})
 const imageUrl = ref('')
@@ -138,7 +140,7 @@ const getTeacherDetails = async () => {
   try {
     const id = route.params.id
     const token = localStorage.getItem('token')
-    const { data } = await axios.get(`http://127.0.0.1:8000/api/get/all/profile/teacher/${id}`, {
+    const { data } = await axios.get(`${url}/get/all/profile/teacher/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
 

@@ -67,6 +67,8 @@
 import { ref, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
+import {getApi} from '@/BaseUrl'
+const { url } = getApi()
 
 const router = useRouter()
 const props = defineProps({
@@ -108,7 +110,7 @@ async function deleteItemConfirm() {
     const id = deletedItem.value.id
     const token = localStorage.getItem('token')
     const response = await axios.delete(
-      `http://127.0.0.1:8000/api/subjects/${deletedItem.value.id}`,
+      `${url}/subjects/${deletedItem.value.id}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -155,7 +157,7 @@ async function EditSubject() {
   try {
     const token = localStorage.getItem('token')
     await axios.post(
-      `http://127.0.0.1:8000/api/update/subjects/${editedItem.value.id}`,
+      `${url}/update/subjects/${editedItem.value.id}`,
       editedItem.value,
       { headers: { Authorization: `Bearer ${token}` } },
     )

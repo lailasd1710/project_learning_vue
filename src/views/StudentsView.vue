@@ -16,6 +16,8 @@
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
+import {getApi} from '@/BaseUrl'
+const { url } = getApi()
 
 const router = useRouter()
 
@@ -34,7 +36,7 @@ const headers = ref([
 
 // Fetch all teachers
 const getStudent = async () => {
-  const { data } = await axios.get('http://127.0.0.1:8000/api/get/students')
+  const { data } = await axios.get(`${url}/get/students`)
   students.value = data || []
 }
 

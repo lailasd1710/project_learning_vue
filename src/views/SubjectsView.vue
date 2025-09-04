@@ -63,6 +63,8 @@ import { onMounted, ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 import Subject from '@/components/Subject.vue'
+import {getApi} from '@/BaseUrl'
+const { url } = getApi()
 
 const router = useRouter()
 
@@ -85,7 +87,7 @@ const headers = ref([
 
 const getSubjects = async () => {
   try {
-    const { data } = await axios.get('http://127.0.0.1:8000/api/get/subjects')
+    const { data } = await axios.get(`${url}/get/subjects`)
     subjects.value = data.subjects || []
   } catch (error) {
     console.error('Error loading subjects:', error?.response?.data || error)
@@ -115,7 +117,7 @@ const addNewSubject = async () => {
   formData.append('price', newSubject.value.price)
 
   try {
-    const response = await axios.post('http://127.0.0.1:8000/api/add/subjects', formData, {
+    const response = await axios.post(`${url}/add/subjects`, formData, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     })
     if (response?.data) {

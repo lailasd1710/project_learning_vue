@@ -27,7 +27,7 @@ const chartData = computed(() => ({
   labels: ['Teachers', 'Students'],
   datasets: [
     {
-      backgroundColor: ['#3b82f6', '#475569'],
+      backgroundColor: ['#3b82f6', ' #b271a7'],
       data: [props.teachers, props.students],
     },
   ],

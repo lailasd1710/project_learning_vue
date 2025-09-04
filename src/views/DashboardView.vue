@@ -3,7 +3,7 @@
     <v-row>
       <!-- مجموع المستخدمين -->
       <v-col cols="10" sm="4">
-        <v-card class="pa-4">
+        <v-card class="pa-4" color="#F5F7FA">
           <v-card-title >Total Users </v-card-title>
           <v-card-text class="text-h4">{{ totalUsers }}</v-card-text>
         </v-card>
@@ -11,15 +11,15 @@
 
       <!-- عدد المواد -->
       <v-col cols="10" sm="4">
-        <v-card class="pa-4">
+        <v-card class="pa-4" color="#F5F7FA">
           <v-card-title>Total Subjects </v-card-title>
           <v-card-text class="text-h4">{{ totalSubjects }}</v-card-text>
         </v-card>
       </v-col>
     </v-row><v-row>
       <!-- المخطط الدائري -->
-      <v-col cols="12" sm="8" style="height: 250px;">
-        <v-card class="pa-4 d-flex align-center justify-center">
+      <v-col cols="12" sm="8" style="height: 250px;" >
+        <v-card class="pa-4 d-flex align-center justify-center" color="#F5F7FA">
           <DashPie :teachers="teachersCount" :students="studentsCount" />
         </v-card>
       </v-col>
@@ -31,6 +31,8 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import axios from 'axios'
 import DashPie from '../components/DashPie.vue'
+import {getApi} from '@/BaseUrl'
+const { url } = getApi()
 
 const totalUsers = ref(0)
 const totalSubjects = ref(0)
@@ -41,13 +43,13 @@ let refreshInterval = null
 const refreshData = async () => {
   try {
     const token = localStorage.getItem('token')
-    const usersRes = await axios.get('http://127.0.0.1:8000/api/get/users', {
+    const usersRes = await axios.get(`${url}/get/users`, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     })
 
-    const subjectsRes = await axios.get('http://127.0.0.1:8000/api/get/subjects')
+    const subjectsRes = await axios.get(`${url}/get/subjects`)
 
 // نفكّ الداتا بحسب الصيغة اللي وصلتكِ
 const { students = [], teachers = [], admins = [] } = usersRes.data

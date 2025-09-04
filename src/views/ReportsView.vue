@@ -1,136 +1,129 @@
 <template>
-  <v-container class="reports">
-    <v-row style="color: #3b82f6" class="d-flex flex-wrap justify-center">
-      <h1>Reports</h1>
-    </v-row>
+  <v-container fluid class="student">
+    <h1 class="mb-12" style="color: #3b82f6; text-align: center">
+      Reports
+    </h1>
 
-    <v-row>
-      <v-col>
-        <h2 style="color: #3b82f6">Start</h2>
-        <VueDatePicker
-          v-model="RangeDate.start_date"
-          :max="RangeDate.end_date"
-          :format="format"
-        ></VueDatePicker>
-      </v-col>
-      <v-col>
-        <h2 style="color: #3b82f6">End</h2>
-        <VueDatePicker
-          v-model="RangeDate.end_date"
-          :min="RangeDate.start_date"
-          :format="format"
-        ></VueDatePicker>
-      </v-col>
-    </v-row>
-
-    <v-row>
-      <v-col cols="12" class="d-flex flex-wrap justify-space-around">
-        <v-btn class="custom-btn" width="20%" elevation="2" @click="validateAndFetchData"
-          >Search</v-btn
-        >
-      </v-col>
-    </v-row>
-
-    <v-row v-if="bills.length" class="d-flex flex-wrap justify-center">
-      <v-table fixed-header class="data-table my-8 mx-8" width="100%">
-        <thead>
-          <tr>
-            <th class="text-left table-header">Name</th>
-            <th class="text-left table-header">type</th>
-            <th class="text-left table-header">phone</th>
-            <th class="text-left table-header">email</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in bills" :key="item.id">
-            <td>{{ item.name }}</td>
-            <td>{{ item.type }}</td>
-            <td>{{ item.phone }}</td>
-            <td>{{ item.email }}</td>
-          </tr>
-        </tbody>
-      </v-table>
-    </v-row>
-    <v-row class="d-flex flex-wrap justify-center">
-      <v-snackbar v-model="snackbar" color="red" timeout="3000">
-        {{ snackbarMessage }}
-      </v-snackbar>
-    </v-row>
+    <v-data-table
+      :headers="headers"
+      :items="users"
+      class="elevation-3"
+      item-key="id"
+      ref="userRef"
+    >
+      <!-- custom display for role -->
+      <template #item.role_id="{ item }">
+        {{ item.role_id === 1 ? 'Student' : 'Teacher' }}
+      </template>
+    </v-data-table>
   </v-container>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import axios from 'axios'
+import {getApi} from '@/BaseUrl'
+const { url } = getApi()
 
-const RangeDate = ref({
-  start_date: null,
-  end_date: null,
-})
+const users = ref([])
 
-const bills = ref([])
-const snackbar = ref(false)
-const snackbarMessage = ref('')
+const headers = ref([
+  { title: 'ID', value: 'id' ,sortable: true },
+  { title: 'Name', value: 'name' },
+  { title: 'Email', value: 'email' },
+  { title: 'Phone', value: 'phone' },
+  { title: 'Role', value: 'role_id' },
+])
 
-const format = (date) => {
-  const day = date.getDate()
-  const month = date.getMonth() + 1
-  const year = date.getFullYear()
-  return `${year}-${month}-${day}`
-}
 
-const validateAndFetchData = async () => {
-  if (new Date(RangeDate.value.start_date) >= new Date(RangeDate.value.end_date)) {
-    snackbarMessage.value = 'Start date must be earlier than end date.'
-    snackbar.value = true
-    return
-  }
-
+const fetchUsers = async () => {
   try {
-    const response = await get(
-      `https://basma.icu/api/buying_orders/order/getSoldProductsBetweenDates?start_date=${format(
-        RangeDate.value.start_date,
-      )}&end_date=${format(RangeDate.value.end_date)}`,
+    // اقرأ التوكن من المكان اللي مخزنه فيه (مثلاً localStorage)
+    const token = localStorage.getItem('token') 
+
+    // أرسل الطلب مع هيدر Authorization
+    const { data } = await axios.get(
+      `${url}/get/users`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
     )
 
-    bills.value = response.data.data
-    totalRecords.value = response.data.total_records
-    totalPrice.value = response.data.total_price
+    // استخرج الطلاب والمعلمين وادمجهم
+    const studentList = Array.isArray(data.students) ? data.students : []
+    const teacherList = Array.isArray(data.teachers) ? data.teachers : []
+    users.value = [...studentList, ...teacherList]
+
   } catch (error) {
-    snackbarMessage.value = 'Failed to fetch data.'
-    snackbar.value = true
+    console.error('Error fetching users with token:', error)
+    users.value = []
   }
 }
+
+onMounted(() => {
+  fetchUsers()
+})
 </script>
 
 <style>
-.custom-btn {
-  background-color: #3b82f6;
-  color: white;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-  border-radius: 8px; /* حواف مدورة */
+.button-add {
+  bottom: 0.4cm;
+  position: fixed !important;
+  right: 0.4cm !important;
+  border-radius: 50%;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.7);
 }
 
-.custom-btn:hover {
-  transform: scale(1.05); /* تكبير الزر عند التمرير */
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+.custom-button {
+  background-color: #3b82f6 !important;
+  color: white !important;
+  transition: transform 0.2s;
+  border-radius: 25px;
 }
 
-.custom-btn:active {
-  transform: scale(1.1); /* تكبير الزر عند النقر */
+.custom-button:hover {
+  transform: scale(1.05);
 }
 
-.table-header {
-  color: #b271a7; /* تعديل لون العناوين */
+.custom-button:active {
+  transform: scale(0.95);
 }
 
-.summary-card {
-  background-color: rgba(178, 113, 167, 0.7); /* تعديل لون وشفافية البطاقات */
+.custom-buttonC {
+  background-color: #3b82f6 !important;
+  color: white !important;
+  transition: transform 0.2s;
+  border-radius: 25px;
 }
 
-.summary-text {
-  color: #fff;
-  text-align: center;
+.custom-buttonC:hover {
+  transform: scale(1.05);
+}
+
+.custom-buttonC:active {
+  transform: scale(0.95);
+}
+
+.custom-buttonb {
+  background-color: #679fc2 !important;
+  color: white !important;
+  transition: transform 0.2s;
+  border-radius: 25px;
+  margin: 8px;
+}
+
+.send-message-btn {
+  margin-top: 20px; /* مسافة صغيرة بين الجدول والزر */
+  border-radius: 25px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.7);
+}
+
+.fixed-below-navbar-left {
+  position: fixed !important;
+  left: 0.4cm !important;
+  border-radius: 50%;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.7);
 }
 </style>

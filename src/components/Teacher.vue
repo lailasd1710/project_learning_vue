@@ -32,6 +32,8 @@
 import { computed, ref, watch, nextTick, toRaw } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
+import {getApi} from '@/BaseUrl'
+const { url } = getApi()
 
 const router = useRouter()
 const props = defineProps({
@@ -76,7 +78,7 @@ async function deleteItemConfirm() {
   try {
     const id = deletedItem.value.id
     const token = localStorage.getItem('token')
-    await axios.delete(`http://127.0.0.1:8000/api/delete/user/${deletedItem.value.id}`, {
+    await axios.delete(`${url}/delete/user/${deletedItem.value.id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: 'application/json',

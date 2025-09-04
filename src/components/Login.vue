@@ -37,6 +37,8 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
+import {getApi} from '@/BaseUrl'
+const { url } = getApi()
 
 export default {
   name: 'Login',
@@ -50,7 +52,7 @@ export default {
     const snackbarColor = ref('#3b82f6')
     const login = async () => {
       try {
-        const response = await axios.post('http://127.0.0.1:8000/api/login', {
+        const response = await axios.post(`${url}/login`, {
           phone: phone.value,
           password: password.value,
         })

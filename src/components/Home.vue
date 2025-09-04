@@ -1,6 +1,6 @@
 <template>
   <div class="bars">
-    <v-navigation-drawer v-model="drawer" permanent elevation="5" color="#ffffff">
+    <v-navigation-drawer v-model="drawer" permanent elevation="5" color="#F5F7FA">
       <v-list-item>
         <v-img src="/images/default-teacher.png" class="mx-auto my-1" height="120" width="120" />
       </v-list-item>
@@ -56,7 +56,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar :elevation="3" color="#ffffff" scroll-behavior="fade-image">
+    <v-app-bar :elevation="3" color="#F5F7FA" scroll-behavior="fade-image">
       <v-spacer></v-spacer>
       <v-btn @click="openChangePasswordDialog" icon="mdi-lock" color="#0f172a"></v-btn>
       <v-btn @click="logout" icon="mdi-logout" color="#0f172a"></v-btn>
@@ -108,6 +108,8 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
+import {getApi} from '@/BaseUrl'
+const { url } = getApi()
 
 const drawer = ref(true)
 const changePasswordDialog = ref(false)
@@ -142,7 +144,7 @@ async function changePassword() {
   try {
     const token = localStorage.getItem('token')
     await axios.post(
-      'http://127.0.0.1:8000/api/change-password',
+      `${url}/change-password`,
       {
         old_password: old_password.value,
         new_password: new_password.value,
@@ -174,7 +176,7 @@ async function logout() {
   try {
     const token = localStorage.getItem('token')
     await axios.get(
-      'http://127.0.0.1:8000/api/logout',
+      `${url}/logout`,
       {},
       {
         headers: {
@@ -186,7 +188,6 @@ async function logout() {
   } catch (error) {
     console.error('Logout failed:', error)
   } finally {
-    // إزالة التوكن دائماً والتحويل لصفحة اللوجن
     localStorage.removeItem('token')
     router.push('/')
   }
@@ -199,9 +200,7 @@ function checkAuth() {
   }
 }
 
-function redirectToLogin() {
-  window.location.href = '/login'
-}
+
 
 onMounted(() => {
   checkAuth()

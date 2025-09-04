@@ -130,6 +130,10 @@ import { onMounted, ref } from 'vue'
 import Teacher from '@/components/Teacher.vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
+import {getApi} from '@/BaseUrl'
+const { url } = getApi()
+
+
 
 const router = useRouter()
 
@@ -160,7 +164,7 @@ const headers = ref([
 
 // Fetch all teachers
 const getTeacher = async () => {
-  const { data } = await axios.get('http://127.0.0.1:8000/api/get/teachers')
+  const { data } = await axios.get(`${url}/get/teachers`);
   teachers.value = data || []
 }
 
@@ -168,7 +172,7 @@ const getTeacher = async () => {
 const getSubjectRequests = async () => {
   try {
     const token = localStorage.getItem('token')
-    const { data } = await axios.get('http://127.0.0.1:8000/api/get/request/join/subject', {
+    const { data } = await axios.get(`${url}/get/request/join/subject`, {
       headers: { Authorization: `Bearer ${token}` },
     })
 
@@ -204,7 +208,7 @@ const addNewTeacher = async () => {
   formData.append('email', newUser.value.email)
 
   try {
-    const response = await axios.post('http://127.0.0.1:8000/api/register/teacher', formData, {
+    const response = await axios.post(`${url}/register/teacher`, formData, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     })
     if (response?.data) {
@@ -230,7 +234,7 @@ const acceptRequest = async (id) => {
     const token = localStorage.getItem('token')
     // نرسل الحالة accepted
     const { data } = await axios.post(
-      `http://127.0.0.1:8000/api/response/teacher/join/subject/${id}`,
+      `${url}/response/teacher/join/subject/${id}`,
       { status: 'accept' },
       { headers: { Authorization: `Bearer ${token}` } },
     )
@@ -249,7 +253,7 @@ const rejectRequest = async (id) => {
     const token = localStorage.getItem('token')
     // نرسل الحالة rejected
     const { data } = await axios.post(
-      `http://127.0.0.1:8000/api/response/teacher/join/subject/${id}`,
+      `${url}/response/teacher/join/subject/${id}`,
       { status: 'reject' },
       { headers: { Authorization: `Bearer ${token}` } },
     )
