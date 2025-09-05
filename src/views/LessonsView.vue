@@ -1,22 +1,22 @@
 <template>
   <v-container fluid class="our_school">
-    <h1 class="mb-9" style="color:  #3B82F6  ; text-align: center;">
+    <h1 class="mb-9" style="color: #3B82F6; text-align: center;">
       Lessons
     </h1>
 
+    <!-- selectors row -->
     <v-row justify="center" class="form-row">
       <!-- Subject selector -->
       <v-col cols="12" sm="6" md="3">
         <v-select
           clearable
           label="Select Subject"
-          color=" #3B82F6 "
           :items="subjects"
           item-value="id"
           item-title="title"
           variant="outlined"
+          color="#3B82F6"
           v-model="selectedSubjectId"
-          @change="onSubjectChange"
         />
       </v-col>
 
@@ -25,65 +25,129 @@
         <v-select
           clearable
           label="Select Teacher"
-          color=" #3B82F6 "
           :items="teachers"
           item-value="id"
           item-title="name"
           variant="outlined"
+          color="#3B82F6"
           v-model="selectedTeacherId"
-          @change="onTeacherChange"
         />
       </v-col>
 
-      <!-- Lesson selector (wired later) -->
+      <!-- Lesson titles dropdown -->
       <v-col cols="12" sm="6" md="3">
         <v-select
           clearable
           label="Select Lesson"
-          color=" #3B82F6 "
           :items="titles"
           item-value="id"
           item-title="title"
           variant="outlined"
+          color="#3B82F6"
           v-model="selectedTitleId"
         />
       </v-col>
+    </v-row>
 
-      <!-- Fetch lessons button -->
-      <v-col cols="12" sm="6" class="d-flex justify-center align-center">
-        <v-btn class="custom-buttonb" @click="fetchLessonsForSubject">
-          SELECTION
+    <!-- selection button -->
+    <v-row justify="center" class="form-row">
+      <v-col cols="12" sm="6" md="3" class="d-flex align-center">
+        <v-btn class="custom-buttonb" @click="showSelectedLesson = true">
+          Selection
         </v-btn>
       </v-col>
     </v-row>
 
-    <!-- Display lessons -->
-    <v-row justify="center" v-if="lessons.length" class="lessons-row">
-      <v-col
-        cols="12"
-        md="8"
-        v-for="lesson in lessons"
-        :key="lesson.id"
-        class="lesson-col"
-      >
-        <v-card class="my-3 lesson-card" elevation="4">
-          <v-card-title class="video-title">
-            {{ lesson.title || 'بدون عنوان' }}
+    <!-- Lesson content: title, video & summary -->
+    <v-row
+      justify="center"
+      v-if="showSelectedLesson && selectedLesson"
+      class="lessons-row"
+    >
+      <v-col cols="12" md="8" class="lesson-col">
+        <v-card class="my-3 lesson-card" elevation="4" color="#F5F7FA">
+          <v-card-title
+            class="video-title"
+            style="color: #3b82f6; text-align: center; font-size: 20px; margin-bottom: 8px; font-weight: bold;"
+          >
+            {{ selectedLesson.title }}
           </v-card-title>
+
           <v-card-text>
-            <AdvancedVideo
-              v-if="lesson.cldVid"
-              :cldVid="lesson.cldVid"
+            <!-- space above video -->
+            <video
+              v-if="selectedLesson.video_path"
               controls
-              style="width: 100%; height: 100%;"
-            />
-            <div v-if="lesson.description">{{ lesson.description }}</div>
+              :src="selectedLesson.video_path"
+              class="lesson-video"
+            ></video>
+
+            <!-- summary mini-card -->
+            <v-card class="summary-mini pa-2">
+              <div class="summary-text">
+                <a
+                  :href="selectedLesson.summary_path"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  View Summary
+                </a>
+              </div>
+            </v-card>
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
 
-    <!-- Illustration -->
+    <!-- Comments & replies section -->
+    <v-row justify="center" v-if="showSelectedLesson && comments.length" class="comments-section">
+      <v-col cols="12" md="8">
+        <h2 class="comments-title">Comments</h2>
+
+        <!-- loop through each comment -->
+        <v-card
+          v-for="comment in comments"
+          :key="comment.id"
+          class="comment-card mb-4"
+          elevation="2"
+        >
+          <!-- comment header: user name & date -->
+          <v-card-title class="comment-header">
+            <span class="comment-user">{{ comment.user.name }}</span>
+            <span class="comment-date">{{ formatDate(comment.created_at) }}</span>
+          </v-card-title>
+
+          <!-- comment content -->
+          <v-card-text class="comment-content">
+            {{ comment.content }}
+          </v-card-text>
+
+          <!-- nested replies -->
+          <v-card
+            v-if="replies[comment.id]?.length"
+            class="reply-card ml-6 my-2 pa-2"
+            elevation="1"
+          >
+            <v-card-title class="reply-header">
+              <span class="reply-user">{{ replies[comment.id][0].user.name }}</span>
+              <span class="reply-date">{{ formatDate(replies[comment.id][0].created_at) }}</span>
+            </v-card-title>
+            <v-card-text class="reply-content">
+              {{ replies[comment.id][0].content }}
+            </v-card-text>
+          </v-card>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <!-- no comments message -->
+    <v-row justify="center" v-else-if="showSelectedLesson" class="comments-section">
+      <v-col cols="12" md="8">
+        <p class="no-comments">No comments yet.</p>
+      </v-col>
+    </v-row>
+
+    <!-- Illustration (unchanged) -->
     <v-row justify="center" class="image-row">
       <v-col cols="12" md="6" class="d-flex justify-center">
         <v-img src="@/assets/online-learning.png" aspect-ratio="1.7" />
@@ -93,172 +157,267 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
-import axios from 'axios';
-import {getApi} from '@/BaseUrl'
+import { ref, computed, watch, onMounted, reactive } from 'vue'
+import axios from 'axios'
+import { getApi } from '@/BaseUrl'
+
 const { url } = getApi()
 
-const subjects          = ref([]);
-const teachers          = ref([]);
-const titles            = ref([]);
-const lessons           = ref([]);
+// reactive stores
+const subjects          = ref([])
+const teachers          = ref([])
+const titles            = ref([])
+const allLessons        = ref([])
+const comments          = ref([])
+const replies           = reactive({})
 
-const selectedSubjectId = ref(null);
-const selectedTeacherId = ref(null);
-const selectedTitleId   = ref(null);
+// user selections & flags
+const selectedSubjectId  = ref(null)
+const selectedTeacherId  = ref(null)
+const selectedTitleId    = ref(null)
+const showSelectedLesson = ref(false)
 
-// 1) Load subjects
-const fetchSubjects = async () => {
+// computed: the currently selected lesson object
+const selectedLesson = computed(() =>
+  allLessons.value.find(l => l.id === selectedTitleId.value) || null
+)
+
+// format ISO date into "MMM DD, YYYY hh:mm"
+function formatDate(isoString) {
+  const opts = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  }
+  return new Date(isoString).toLocaleDateString('en-US', opts)
+}
+
+// 1) load subjects when component mounts
+async function fetchSubjects() {
   try {
-    const res = await axios.get(`${url}/get/subjects`);
+    const res = await axios.get(`${url}/get/subjects`)
     subjects.value = Array.isArray(res.data.subjects)
       ? res.data.subjects
-      : [];
+      : []
   } catch (e) {
-    console.error('Error fetching subjects:', e);
+    console.error('Error fetching subjects:', e)
   }
-};
+}
+onMounted(fetchSubjects)
 
-// 2) Load teachers for chosen subject
-const fetchTeachers = async (subjectId) => {
-  if (!subjectId) {
-    teachers.value = [];
-    return;
+// 2) load teachers whenever a subject is selected
+watch(selectedSubjectId, async (newId) => {
+  selectedTeacherId.value   = null
+  selectedTitleId.value     = null
+  showSelectedLesson.value  = false
+  titles.value              = []
+  allLessons.value          = []
+  comments.value            = []
+  Object.keys(replies).forEach(k => delete replies[k])
+
+  if (!newId) {
+    teachers.value = []
+    return
   }
+
   try {
+    const token = localStorage.getItem('token')
     const res = await axios.get(
-      `${url}/get/teachers/subject/${subjectId}`
-    );
-    // API returns an array at root
-    teachers.value = Array.isArray(res.data)
-      ? res.data
-      : [];
+      `${url}/get/teachers/subject/${newId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    teachers.value = Array.isArray(res.data) ? res.data : []
   } catch (e) {
-    console.error('Error fetching teachers:', e);
+    console.error('Error fetching teachers:', e)
+    teachers.value = []
   }
-};
+})
 
-// 3) Load titles stub (wired later)
-const fetchTitles = async (teacherId) => {
-  if (!teacherId) {
-    titles.value = [];
-    return;
-  }
-  // your existing titles fetch...
-};
+// 3) load lessons when a teacher is selected
+watch(selectedTeacherId, async (newTeacherId) => {
+  selectedTitleId.value     = null
+  showSelectedLesson.value  = false
+  titles.value              = []
+  allLessons.value          = []
+  comments.value            = []
+  Object.keys(replies).forEach(k => delete replies[k])
 
-// 4) Fetch lessons using new endpoint:
-//    - teacherId in URL
-//    - subjectId in body
-//    - Bearer token in headers
-const fetchLessonsForSubject = async () => {
-  if (!selectedSubjectId.value || !selectedTeacherId.value) {
-    console.warn('Subject or teacher not selected');
-    return;
-  }
+  if (!newTeacherId || !selectedSubjectId.value) return
+
   try {
-    // grab token from localStorage (or wherever you store it)
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token')
+    const form  = new FormData()
+    form.append('subject_id', selectedSubjectId.value)
+
     const res = await axios.post(
-      `${url}/guest/lesson_teacher_subject/${selectedTeacherId.value}`,
-      { subject_id: selectedSubjectId.value },
+      `${url}/get/lessons/teacher/${newTeacherId}`,
+      form,
       {
         headers: {
           Authorization: `Bearer ${token}`,
-        },
+          'Content-Type': 'multipart/form-data'
+        }
       }
-    );
-    // assume lessons come back under res.data.data
-    lessons.value = Array.isArray(res.data.data)
-      ? res.data.data.map(lesson => ({
-          ...lesson,
-          cldVid: cld.video(lesson.video), // if using Cloudinary
-        }))
-      : [];
-  } catch (e) {
-    console.error('Error fetching lessons:', e);
-    lessons.value = [];
+    )
+
+    // response: { lessons: [...] }
+    const payload = Array.isArray(res.data.lessons)
+      ? res.data.lessons
+      : []
+
+    allLessons.value = payload.map(item => ({
+      id:           item.id,
+      title:        item.title,
+      video_path:   item.video_path,
+      summary_path: item.summary_path
+    }))
+
+    titles.value = allLessons.value.map(l => ({
+      id:    l.id,
+      title: l.title
+    }))
+  } catch (err) {
+    console.error('Error fetching lessons:', err)
   }
-};
+})
 
-const onSubjectChange = (id) => {
-  selectedTeacherId.value = null;
-  titles.value = [];
-  selectedTitleId.value = null;
-  fetchTeachers(id);
-};
+// 4) whenever the lesson is shown, fetch its comments & replies
+watch(showSelectedLesson, async (show) => {
+  if (!show || !selectedTitleId.value) return
+  try {
+    const token = localStorage.getItem('token')
+    // fetch comments
+    const cRes = await axios.get(
+      `${url}/get/comment/lesson/${selectedTitleId.value}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    comments.value = Array.isArray(cRes.data) ? cRes.data : []
 
-const onTeacherChange = (id) => {
-  selectedTitleId.value = null;
-  fetchTitles(id);
-};
-
-watch(selectedSubjectId, fetchTeachers);
-watch(selectedTeacherId, fetchTitles);
-
-// initial load
-fetchSubjects();
+    // fetch replies for each comment
+    for (const c of comments.value) {
+      const rRes = await axios.get(
+        `${url}/get/replies/comment/${c.id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      replies[c.id] = Array.isArray(rRes.data) ? rRes.data : []
+    }
+  } catch (e) {
+    console.error('Error fetching comments or replies:', e)
+  }
+})
 </script>
 
-
 <style scoped>
-.v-card {
-  border-radius: 10px;
-  background-color: #ffffff !important;
-}
-
-.button-add {
-  position: fixed !important;
-  bottom: 0.4cm !important;
-  right: 0.4cm !important;
-}
-
-.custom-buttonb {
-  background-color:  #3B82F6   !important;
-  color: white !important;
-  transition: transform 0.2s;
-  border-radius: 40px;
-  width: 48%;
-  font-size: 17px;
-}
-
-.custom-buttonb:hover {
-  transform: scale(1.05);
-}
-
-.custom-buttonb:active {
-  transform: scale(0.95);
-}
-
+/* spacing around form row */
 .form-row {
   margin-bottom: 20px;
 }
 
-.lessons-row {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.lesson-col {
+/* selection button style */
+.custom-buttonb {
+  background-color: #3b82f6 !important;
+  color: white !important;
   width: 100%;
 }
 
-.lesson-card {
+/* lesson video spacing */
+.lesson-video {
   width: 100%;
-  max-width: 1000px;
-  background-color: #ffffff;
+  max-height: 450px;
+  display: block;
+  margin: 0 auto 12px;
+  border-radius: 4px;
 }
 
-.image-row {
-  margin-top: 20px;
-  margin-bottom: 20px;
+/* summary mini-card */
+.summary-mini {
+  max-width: 400px;
+  margin: 0 auto;
+  background-color: #fafafa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
 }
-
-.video-title {
-  color: #b271a7;
+.summary-text a {
+  font-size: 16px;
+  color: #3b82f6;
+  font-weight: bold;
   text-align: center;
-  width: 100%;
-  font-size: 20px;
+  display: block;
+}
+
+/* Comments section */
+.comments-section {
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+.comments-title {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #3b82f6;
+  text-align: left;
+}
+
+/* comment card */
+.comment-card {
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+/* comment header */
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 500;
+}
+.comment-user {
+  color: #0f172a;
+}
+.comment-date {
+  color: #475569;
+  font-size: 14px;
+}
+/* comment content */
+.comment-content {
+  padding-left: 16px;
+  color: #333;
+}
+
+/* reply card nested inside comment */
+.reply-card {
+  background: #ffffff;
+  border-left: 3px solid #3b82f6;
+  border-radius: 6px;
+}
+.reply-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 400;
+  font-size: 14px;
+}
+.reply-user {
+  color: #0f172a;
+}
+.reply-date {
+  color: #94a3b8;
+  font-size: 12px;
+}
+.reply-content {
+  padding-left: 12px;
+  color: #475569;
+  font-size: 14px;
+}
+
+/* no comments message */
+.no-comments {
+  text-align: center;
+  color: #94a3b8;
+  padding: 16px;
+}
+
+/* illustration row spacing */
+.image-row {
+  margin: 20px 0;
 }
 </style>

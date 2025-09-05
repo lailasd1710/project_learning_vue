@@ -2,7 +2,7 @@
   <div class="bars">
     <v-navigation-drawer v-model="drawer" permanent elevation="5" color="#F5F7FA">
       <v-list-item>
-        <v-img src="/images/default-teacher.png" class="mx-auto my-1" height="120" width="120" />
+        <v-img src="../src/assets/quiz.png" class="mx-auto my-1" height="120" width="120" />
       </v-list-item>
 
       <v-divider :thickness="2" class="border-opacity-65" color="#e5e7eb"></v-divider>
@@ -107,6 +107,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import quiz from '@/assets/quiz.png'
 import axios from 'axios'
 import {getApi} from '@/BaseUrl'
 const { url } = getApi()

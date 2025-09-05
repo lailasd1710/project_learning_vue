@@ -13,4 +13,8 @@ body {
   font-family: 'Roboto', sans-serif;
   color: #0f172a; /* Text Primary */
 }
+.app-background {
+  background-color: #F5F7FA;
+  min-height: 100vh;
+}
 </style>

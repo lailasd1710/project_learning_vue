@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-card max-width="500" class="ma-auto pa-5" color="#fff" elevation="8">
-      <v-img :src="logo1" class="ma-auto pa-5" contain height="270" width="270" />
+      <v-img src="../src/assets/quiz.png" class=" ma-auto pa-5" contain height="270" width="270" />
       <v-card-text style="text-align: center; color: #3b82f6"><h1>Login</h1></v-card-text>
       <v-text-field
         class="my-5"
