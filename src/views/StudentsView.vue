@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class="student">
-    <h1 class="mb-12" style="color: #3b82f6; text-align: center">Students</h1>
+    <h1 class="mb-12" style="color: #5A94F3; text-align: center">Students</h1>
     <v-data-table
       :headers="headers"
       :items="students"
@@ -55,7 +55,7 @@ onMounted(() => {
 }
 
 .custom-button {
-  background-color: #3b82f6 !important;
+  background-color: #5A94F3 !important;
   color: white !important;
   transition: transform 0.2s;
   border-radius: 25px;

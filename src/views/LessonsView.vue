@@ -1,6 +1,8 @@
+<!-- src/views/Lessons.vue -->
 <template>
   <v-container fluid class="our_school">
-    <h1 class="mb-9" style="color: #3B82F6; text-align: center;">
+    <!-- Page title -->
+    <h1 class="mb-9" style="color: #5A94F3; text-align: center;">
       Lessons
     </h1>
 
@@ -15,7 +17,7 @@
           item-value="id"
           item-title="title"
           variant="outlined"
-          color="#3B82F6"
+          color="#5A94F3"
           v-model="selectedSubjectId"
         />
       </v-col>
@@ -29,7 +31,7 @@
           item-value="id"
           item-title="name"
           variant="outlined"
-          color="#3B82F6"
+          color="#5A94F3"
           v-model="selectedTeacherId"
         />
       </v-col>
@@ -43,7 +45,7 @@
           item-value="id"
           item-title="title"
           variant="outlined"
-          color="#3B82F6"
+          color="#5A94F3"
           v-model="selectedTitleId"
         />
       </v-col>
@@ -58,92 +60,106 @@
       </v-col>
     </v-row>
 
-    <!-- Lesson content: title, video & summary -->
-    <v-row
-      justify="center"
-      v-if="showSelectedLesson && selectedLesson"
-      class="lessons-row"
-    >
-      <v-col cols="12" md="8" class="lesson-col">
-        <v-card class="my-3 lesson-card" elevation="4" color="#F5F7FA">
+    <!-- lesson card: wraps video, summary & comments -->
+    <v-row justify="center" class="lessons-row">
+      <v-col
+        cols="12"
+        md="8"
+        v-if="showSelectedLesson && selectedLesson"
+      >
+        <v-card
+          class="my-3 lesson-card pa-4"
+          elevation="4"
+          style="background-color: #E3ECFB;"
+        >
+          <!-- Lesson title -->
           <v-card-title
             class="video-title"
-            style="color: #3b82f6; text-align: center; font-size: 20px; margin-bottom: 8px; font-weight: bold;"
+            style="color: #5A94F3;
+                   text-align: center;
+                   font-size: 20px;
+                   font-weight: bold;
+                   margin-bottom: 8px;"
           >
             {{ selectedLesson.title }}
           </v-card-title>
 
+          <!-- Video & summary -->
           <v-card-text>
-            <!-- space above video -->
             <video
               v-if="selectedLesson.video_path"
               controls
               :src="selectedLesson.video_path"
               class="lesson-video"
+              style="width: 100%; margin-bottom: 16px;"
             ></video>
 
-            <!-- summary mini-card -->
-            <v-card class="summary-mini pa-2">
+            <v-card class="summary-mini pa-2" style="background: white;">
               <div class="summary-text">
                 <a
                   :href="selectedLesson.summary_path"
                   target="_blank"
                   rel="noopener noreferrer"
+                  style="color: #5A94F3; text-decoration: none; font-weight: 500;"
                 >
                   View Summary
                 </a>
               </div>
             </v-card>
           </v-card-text>
+
+          <!-- comments section -->
+          <div v-if="comments.length" class="comments-section" style="margin-top: 24px;">
+            <h2 class="comments-title" style="color: #5A94F3; font-size: 18px; margin-bottom: 16px;">
+              Comments
+            </h2>
+            <v-card
+              v-for="comment in comments"
+              :key="comment.id"
+              class="comment-card mb-4 pa-4"
+              elevation="2"
+            >
+              <!-- comment header -->
+              <v-card-title class="comment-header" style="display: flex; justify-content: space-between;">
+                <span class="comment-user" style="font-weight: 600;">
+                  {{ comment.user.name }}
+                </span>
+                <span class="comment-date" style="color: gray; font-size: 12px;">
+                  {{ formatDate(comment.created_at) }}
+                </span>
+              </v-card-title>
+
+              <!-- comment content -->
+              <v-card-text class="comment-content" style="margin-bottom: 12px;">
+                {{ comment.content }}
+              </v-card-text>
+
+              <!-- nested reply (if any) -->
+              <v-card
+                v-if="replies[comment.id]?.length"
+                class="reply-card pa-3"
+                elevation="1"
+                style="background: #F5F7FA; margin-left: 24px;"
+              >
+                <v-card-title class="reply-header" style="display: flex; justify-content: space-between;">
+                  <span class="reply-user" style="font-weight: 600;">
+                    {{ replies[comment.id][0].user.name }}
+                  </span>
+                  <span class="reply-date" style="color: gray; font-size: 12px;">
+                    {{ formatDate(replies[comment.id][0].created_at) }}
+                  </span>
+                </v-card-title>
+                <v-card-text class="reply-content">
+                  {{ replies[comment.id][0].content }}
+                </v-card-text>
+              </v-card>
+            </v-card>
+          </div>
+
+          <p v-else class="no-comments" style="text-align: center; color: gray; margin-top: 24px;">
+            No comments yet.
+          </p>
         </v-card>
-      </v-col>
-    </v-row>
-
-    <!-- Comments & replies section -->
-    <v-row justify="center" v-if="showSelectedLesson && comments.length" class="comments-section">
-      <v-col cols="12" md="8">
-        <h2 class="comments-title">Comments</h2>
-
-        <!-- loop through each comment -->
-        <v-card
-          v-for="comment in comments"
-          :key="comment.id"
-          class="comment-card mb-4"
-          elevation="2"
-        >
-          <!-- comment header: user name & date -->
-          <v-card-title class="comment-header">
-            <span class="comment-user">{{ comment.user.name }}</span>
-            <span class="comment-date">{{ formatDate(comment.created_at) }}</span>
-          </v-card-title>
-
-          <!-- comment content -->
-          <v-card-text class="comment-content">
-            {{ comment.content }}
-          </v-card-text>
-
-          <!-- nested replies -->
-          <v-card
-            v-if="replies[comment.id]?.length"
-            class="reply-card ml-6 my-2 pa-2"
-            elevation="1"
-          >
-            <v-card-title class="reply-header">
-              <span class="reply-user">{{ replies[comment.id][0].user.name }}</span>
-              <span class="reply-date">{{ formatDate(replies[comment.id][0].created_at) }}</span>
-            </v-card-title>
-            <v-card-text class="reply-content">
-              {{ replies[comment.id][0].content }}
-            </v-card-text>
-          </v-card>
-        </v-card>
-      </v-col>
-    </v-row>
-
-    <!-- no comments message -->
-    <v-row justify="center" v-else-if="showSelectedLesson" class="comments-section">
-      <v-col cols="12" md="8">
-        <p class="no-comments">No comments yet.</p>
       </v-col>
     </v-row>
 
@@ -163,21 +179,21 @@ import { getApi } from '@/BaseUrl'
 
 const { url } = getApi()
 
-// reactive stores
-const subjects          = ref([])
-const teachers          = ref([])
-const titles            = ref([])
-const allLessons        = ref([])
-const comments          = ref([])
-const replies           = reactive({})
+// reactive state
+const subjects = ref([])
+const teachers = ref([])
+const titles = ref([])
+const allLessons = ref([])
+const comments = ref([])
+const replies = reactive({})
 
-// user selections & flags
-const selectedSubjectId  = ref(null)
-const selectedTeacherId  = ref(null)
-const selectedTitleId    = ref(null)
+// user selections & visibility flag
+const selectedSubjectId = ref(null)
+const selectedTeacherId = ref(null)
+const selectedTitleId = ref(null)
 const showSelectedLesson = ref(false)
 
-// computed: the currently selected lesson object
+// currently selected lesson object
 const selectedLesson = computed(() =>
   allLessons.value.find(l => l.id === selectedTitleId.value) || null
 )
@@ -194,34 +210,36 @@ function formatDate(isoString) {
   return new Date(isoString).toLocaleDateString('en-US', opts)
 }
 
-// 1) load subjects when component mounts
+// 1) Load subjects on mount
 async function fetchSubjects() {
   try {
     const res = await axios.get(`${url}/get/subjects`)
-    subjects.value = Array.isArray(res.data.subjects)
-      ? res.data.subjects
-      : []
+    subjects.value = Array.isArray(res.data.subjects) ? res.data.subjects : []
   } catch (e) {
     console.error('Error fetching subjects:', e)
   }
 }
 onMounted(fetchSubjects)
 
-// 2) load teachers whenever a subject is selected
-watch(selectedSubjectId, async (newId) => {
-  selectedTeacherId.value   = null
-  selectedTitleId.value     = null
-  showSelectedLesson.value  = false
-  titles.value              = []
-  allLessons.value          = []
-  comments.value            = []
-  Object.keys(replies).forEach(k => delete replies[k])
+// 2) Reset & hide lesson card + clear comments/replies whenever any selector changes
+watch(
+  () => [selectedSubjectId.value, selectedTeacherId.value, selectedTitleId.value],
+  () => {
+    showSelectedLesson.value = false
+    comments.value = []
+    Object.keys(replies).forEach(k => delete replies[k])
+  }
+)
 
+// 3) Load teachers when subject changes
+watch(selectedSubjectId, async newId => {
+  selectedTeacherId.value = null
+  titles.value = []
+  allLessons.value = []
   if (!newId) {
     teachers.value = []
     return
   }
-
   try {
     const token = localStorage.getItem('token')
     const res = await axios.get(
@@ -235,20 +253,16 @@ watch(selectedSubjectId, async (newId) => {
   }
 })
 
-// 3) load lessons when a teacher is selected
-watch(selectedTeacherId, async (newTeacherId) => {
-  selectedTitleId.value     = null
-  showSelectedLesson.value  = false
-  titles.value              = []
-  allLessons.value          = []
-  comments.value            = []
-  Object.keys(replies).forEach(k => delete replies[k])
-
+// 4) Load lessons when teacher changes
+watch(selectedTeacherId, async newTeacherId => {
+  selectedTitleId.value = null
+  titles.value = []
+  allLessons.value = []
   if (!newTeacherId || !selectedSubjectId.value) return
 
   try {
     const token = localStorage.getItem('token')
-    const form  = new FormData()
+    const form = new FormData()
     form.append('subject_id', selectedSubjectId.value)
 
     const res = await axios.post(
@@ -262,29 +276,21 @@ watch(selectedTeacherId, async (newTeacherId) => {
       }
     )
 
-    // response: { lessons: [...] }
-    const payload = Array.isArray(res.data.lessons)
-      ? res.data.lessons
-      : []
-
+    const payload = Array.isArray(res.data.lessons) ? res.data.lessons : []
     allLessons.value = payload.map(item => ({
-      id:           item.id,
-      title:        item.title,
-      video_path:   item.video_path,
+      id: item.id,
+      title: item.title,
+      video_path: item.video_path,
       summary_path: item.summary_path
     }))
-
-    titles.value = allLessons.value.map(l => ({
-      id:    l.id,
-      title: l.title
-    }))
+    titles.value = allLessons.value.map(l => ({ id: l.id, title: l.title }))
   } catch (err) {
     console.error('Error fetching lessons:', err)
   }
 })
 
-// 4) whenever the lesson is shown, fetch its comments & replies
-watch(showSelectedLesson, async (show) => {
+// 5) Fetch comments & replies when lesson card opens
+watch(showSelectedLesson, async show => {
   if (!show || !selectedTitleId.value) return
   try {
     const token = localStorage.getItem('token')
@@ -317,7 +323,7 @@ watch(showSelectedLesson, async (show) => {
 
 /* selection button style */
 .custom-buttonb {
-  background-color: #3b82f6 !important;
+  background-color: #5A94F3 !important;
   color: white !important;
   width: 100%;
 }

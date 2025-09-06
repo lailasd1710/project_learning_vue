@@ -17,14 +17,14 @@
       <v-card-title>Are you sure you want to delete this teacher?</v-card-title>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="#3b82f6" variant="text" @click="closeDelete">Cancel</v-btn>
+        <v-btn color="#5A94F3" variant="text" @click="closeDelete">Cancel</v-btn>
         <v-btn color="#ef4444" variant="text" @click="deleteItemConfirm">OK</v-btn>
         <v-spacer></v-spacer>
       </v-card-actions>
     </v-card>
   </v-dialog>
   <!-- Snackbar -->
-  <v-snackbar v-model="snackbar" :timeout="3000" color="#3b82f6" class="white-text">
+  <v-snackbar v-model="snackbar" :timeout="3000" color="#5A94F3" class="white-text">
     {{ snackbarMessage }}
   </v-snackbar>
 </template>
@@ -146,7 +146,7 @@ watch(dialogDelete, (val) => !val && closeDelete())
   transform: scale(0.95);
 }
 .custom-buttonC {
-  background-color: #b271a7 !important;
+  background-color: #5A94F3 !important;
   color: white !important;
   transition: transform 0.2s;
   border-radius: 25px;

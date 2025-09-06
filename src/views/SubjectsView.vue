@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class="subjects">
-    <h1 class="mb-12" style="color: #3b82f6; text-align: center">Subjects</h1>
+    <h1 class="mb-12" style="color: #5A94F3; text-align: center">Subjects</h1>
 
     <Subject
       :headers="headers"
@@ -12,19 +12,19 @@
     <!-- Button to Add Teacher -->
     <v-dialog v-model="dialog" persistent style="max-width: 500px; margin: auto">
       <template v-slot:activator="{ props }">
-        <v-btn v-bind="props" class="button-add" color="#3b82f6" size="60">
+        <v-btn v-bind="props" class="button-add" color="#5A94F3" size="60">
           <v-icon color="white" size="30"> mdi-plus-thick </v-icon>
         </v-btn>
       </template>
       <v-card persistent>
-        <v-card-title style="color: #3b82f6; text-align: center"> Add Subjects</v-card-title>
+        <v-card-title style="color: #5A94F3; text-align: center"> Add Subjects</v-card-title>
         <v-card-text>
           <v-container>
             <v-row>
               <v-col>
                 <v-text-field
                   variant="outlined"
-                  color="#3b82f6"
+                  color="#5A94F3"
                   v-model="newSubject.title"
                   label="Title*"
                   required
@@ -34,7 +34,7 @@
               <v-col>
                 <v-text-field
                   variant="outlined"
-                  color="#3b82f6"
+                  color="#5A94F3"
                   v-model="newSubject.price"
                   label="Price*"
                   required
@@ -46,13 +46,13 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="#EF4444" text @click="dialog = false">Close</v-btn>
-          <v-btn color="#3b82f6" text @click="addNewSubject">Save</v-btn>
+          <v-btn color="#5A94F3" text @click="addNewSubject">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
     <!-- Snackbar -->
-    <v-snackbar v-model="snackbar" :timeout="3000" color="#3b82f6" class="white-text">
+    <v-snackbar v-model="snackbar" :timeout="3000" color="#5A94F3" class="white-text">
       {{ snackbarMessage }}
     </v-snackbar>
   </v-container>
@@ -104,36 +104,43 @@ const showSnackbar = (msg) => {
 // Add new teacher
 const addNewSubject = async () => {
   const requiredFields = ['title', 'price']
-  const missingFields = requiredFields.filter((f) => !newSubject.value[f])
+  const missingFields = requiredFields.filter(f => !newSubject.value[f])
 
   if (missingFields.length > 0) {
     showSnackbar('Insufficient information, please complete the required fields.')
     return
   }
 
-  dialog.value = false
-  const formData = new FormData()
-  formData.append('title', newSubject.value.title)
-  formData.append('price', newSubject.value.price)
-
   try {
-    const response = await axios.post(`${url}/add/subjects`, formData, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-    })
+    // prepare payload
+    const formData = new FormData()
+    formData.append('title', newSubject.value.title)
+    formData.append('price', newSubject.value.price)
+
+    // send request
+    const token = localStorage.getItem('token')
+    const response = await axios.post(
+      `${url}/add/subjects`,
+      formData,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+
     if (response?.data) {
-      snackbarMessage.value = response.data.message
-      snackbar.value = true
-      getSubjects()
+      // close the dialog
+      dialog.value = false
+
+      // refresh the table data
+      await getSubjects()
+
+      // RESET the form fields so inputs are cleared
+      newSubject.value = { title: '', price: '' }
+
+      // notify success
       showSnackbar('Subject added successfully')
     }
   } catch (error) {
     console.error('Error adding Subject:', error)
-    console.error('Request Data:', error.config.data)
-    console.error('Response Status:', error.response.status)
-    console.error('Validation Errors:', error.response.data.errors)
-
-    snackbarMessage.value = 'Failed to add subject. Please try again.'
-    snackbar.value = true
+    showSnackbar('Failed to add subject. Please try again.')
   }
 }
 
@@ -152,7 +159,7 @@ onMounted(() => {
 }
 
 .custom-button {
-  background-color: #3b82f6 !important;
+  background-color: #5A94F3 !important;
   color: white !important;
   transition: transform 0.2s;
   border-radius: 25px;
@@ -167,7 +174,7 @@ onMounted(() => {
 }
 
 .custom-buttonC {
-  background-color: #3b82f6 !important;
+  background-color: #5A94F3 !important;
   color: white !important;
   transition: transform 0.2s;
   border-radius: 25px;

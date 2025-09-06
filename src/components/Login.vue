@@ -2,17 +2,17 @@
   <v-container>
     <v-card max-width="500" class="ma-auto pa-5" color="#fff" elevation="8">
       <v-img src="../src/assets/quiz.png" class=" ma-auto pa-5" contain height="270" width="270" />
-      <v-card-text style="text-align: center; color: #3b82f6"><h1>Login</h1></v-card-text>
+      <v-card-text style="text-align: center; color: #5A94F3"><h1>Login</h1></v-card-text>
       <v-text-field
         class="my-5"
-        color="#3B82F6  "
+        color="#5A94F3  "
         variant="outlined"
         v-model="phone"
         label="Phone Number"
         required
       ></v-text-field>
       <v-text-field
-        color="#3B82F6  "
+        color="#5A94F3  "
         variant="outlined"
         v-model="password"
         name="password"
@@ -62,7 +62,7 @@ export default {
         if (response.data.token) {
           localStorage.setItem('token', response.data.token)
           snackbarMessage.value = 'Login successful!'
-          snackbarColor.value = '#3b82f6' // لون أخضر عند النجاح
+          snackbarColor.value = '#5A94F3' // لون أزرق عند النجاح
           snackbar.value = true
           router.push('/home')
         } else {
@@ -92,7 +92,7 @@ export default {
 
 <style>
 .custom-button {
-  background-color: #3b82f6 !important;
+  background-color: #5A94F3 !important;
   color: white !important;
   transition: transform 0.2s;
   border-radius: 25px;

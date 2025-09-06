@@ -6,7 +6,7 @@
 <style>
 /* تكبير الخط العام لكل المشروع */
 html {
-  font-size: 20px; /* الافتراضي 16px */
+  font-size: 23px; /* الافتراضي 16px */
 }
 
 body {
@@ -14,7 +14,7 @@ body {
   color: #0f172a; /* Text Primary */
 }
 .app-background {
-  background-color: #F5F7FA;
-  min-height: 100vh;
+  background-color: #E3ECFB; /* Light Gray Background */
+  min-height: 100vh
 }
 </style>

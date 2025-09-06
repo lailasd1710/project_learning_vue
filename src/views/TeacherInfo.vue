@@ -4,7 +4,7 @@
       <!-- Header -->
       <div class="header">
         <!-- زر الرجوع -->
-        <v-btn class="back-btn" color="#3b82f6" small @click="goBack">
+        <v-btn class="back-btn" color="#5A94F3" small @click="goBack">
           <v-icon left>mdi-arrow-left</v-icon>
         </v-btn>
 
@@ -84,7 +84,7 @@
                   </v-icon>
                 </v-chip>
                 <p v-if="!acceptedSubjects.length" class="muted-text">
-                  لا يوجد مواد مقبولة
+                  no accepted subjects
                 </p>
               </div>
             </div>
@@ -124,7 +124,7 @@
           <v-card-text>Are you sure you want to delete subject from teacher?</v-card-text>
           <v-card-actions>
             <v-spacer />
-            <v-btn text @click="deleteDialog = false" color="#3b82f6">cancel</v-btn>
+            <v-btn text @click="deleteDialog = false" color="#5A94F3">cancel</v-btn>
             <v-btn color="#ef4444" text @click="deleteSubject">delete</v-btn>
           </v-card-actions>
         </v-card>
@@ -282,7 +282,7 @@ const displayedFields = computed(() => ({
 
 <style>
 :root {
-  --primary: #3b82f6;
+  --primary: #5A94F3;
   --success: #10b981;
   --warning: #f59e0b;
   --error: #ef4444;

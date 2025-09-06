@@ -1,11 +1,11 @@
 <template>
-  <v-data-table :headers="headers" :items="userData" class="elevation-3" item-key="id">
+  <v-data-table :headers="headers" :items="userData" class="elevation-3" item-key="id" color="#E3ECFB" >
     <!-- eslint-disable-next-line vue/valid-v-slot -->
     <template v-slot:item.actions="{ item }">
-      <v-btn size="small" class="custom-button" @click="deleteItem(item)" color="#3b82f6"
+      <v-btn size="small" class="custom-button" @click="deleteItem(item)" 
         >Delete</v-btn
       >
-      <v-btn size="small" class="custom-buttonb" @click="editSubject(item)" color="#679fc2"
+      <v-btn size="small" class="custom-buttonb" @click="editSubject(item)" 
         >Edit</v-btn
       >
     </template>
@@ -13,14 +13,14 @@
   <!-- Button to edit Subject -->
   <v-dialog v-model="dialog" persistent style="max-width: 500px; margin: auto">
     <v-card persistent>
-      <v-card-title style="color: #3b82f6; text-align: center"> Edit Subjects</v-card-title>
+      <v-card-title style="color: #5A94F3; text-align: center"> Edit Subjects</v-card-title>
       <v-card-text>
         <v-container>
           <v-row>
             <v-col>
               <v-text-field
                 variant="outlined"
-                color="#3b82f6"
+                color="#5A94F3"
                 v-model="editedItem.title"
                 label="Title*"
                 required
@@ -30,7 +30,7 @@
             <v-col>
               <v-text-field
                 variant="outlined"
-                color="#3b82f6"
+                color="#5A94F3"
                 v-model="editedItem.price"
                 label="Price*"
                 required
@@ -42,7 +42,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="#EF4444" text @click="dialog = false">Close</v-btn>
-        <v-btn color="#3b82f6" text @click="EditSubject">Save</v-btn>
+        <v-btn color="#5A94F3" text @click="EditSubject">Save</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -52,14 +52,14 @@
       <v-card-title>Are you sure you want to delete this subject?</v-card-title>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="#3b82f6" variant="text" @click="closeDelete">Cancel</v-btn>
+        <v-btn color="#5A94F3" variant="text" @click="closeDelete">Cancel</v-btn>
         <v-btn color="#ef4444" variant="text" @click="deleteItemConfirm">OK</v-btn>
         <v-spacer></v-spacer>
       </v-card-actions>
     </v-card>
   </v-dialog>
   <!-- Snackbar -->
-  <v-snackbar v-model="snackbar" :timeout="3000" color="#3b82f6" class="white-text">
+  <v-snackbar v-model="snackbar" :timeout="3000" color="#5A94F3" class="white-text">
     {{ snackbarMessage }}
   </v-snackbar>
 </template>
@@ -217,7 +217,7 @@ watch(dialogDelete, (val) => !val && closeDelete())
   transform: scale(0.95);
 }
 .custom-buttonC {
-  background-color: #b271a7 !important;
+  background-color: #5A94F3 !important;
   color: white !important;
   transition: transform 0.2s;
   border-radius: 25px;

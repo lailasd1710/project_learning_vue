@@ -1,6 +1,6 @@
 <template>
-  <v-container fluid class="student">
-    <h1 class="mb-12" style="color: #3b82f6; text-align: center">
+  <v-container fluid class="student" color="#E3ECFB">
+    <h1 class="mb-12" style="color: #5A94F3; text-align: center">
       Reports
     </h1>
 
@@ -10,6 +10,8 @@
       class="elevation-3"
       item-key="id"
       ref="userRef"
+      color="#E3ECFB"
+      :items-per-page="5"
     >
       <!-- custom display for role -->
       <template #item.role_id="{ item }">
@@ -28,11 +30,11 @@ const { url } = getApi()
 const users = ref([])
 
 const headers = ref([
-  { title: 'ID', value: 'id' ,sortable: true },
+  { title: 'ID', value: 'id ' ,sortable: true },
   { title: 'Name', value: 'name' },
   { title: 'Email', value: 'email' },
   { title: 'Phone', value: 'phone' },
-  { title: 'Role', value: 'role_id' },
+  { title: 'Role', value: 'role_id',sortable: true},
 ])
 
 

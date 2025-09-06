@@ -1,6 +1,6 @@
 <template>
   <div class="bars">
-    <v-navigation-drawer v-model="drawer" permanent elevation="5" color="#F5F7FA">
+    <v-navigation-drawer v-model="drawer" permanent elevation="5" color="#E3ECFB">
       <v-list-item>
         <v-img src="../src/assets/quiz.png" class="mx-auto my-1" height="120" width="120" />
       </v-list-item>
@@ -9,14 +9,12 @@
 
       <v-list density="compact" nav>
         <v-list-item
-          style="color: #3b82f6"
           prepend-icon="mdi-view-dashboard-outline"
           to="/home/dash"
           value="dashboard"
           >Dashboard</v-list-item
         >
         <v-list-item
-          style="color: #3b82f6"
           prepend-icon="mdi-text-long"
           to="/home/subjects"
           value="subjects"
@@ -24,14 +22,12 @@
           Subjects
         </v-list-item>
         <v-list-item
-          style="color: #3b82f6"
           prepend-icon="mdi-human-male-board"
           to="/home/teachers"
           value="teachers"
           >Teachers</v-list-item
         >
         <v-list-item
-          style="color: #3b82f6"
           prepend-icon="mdi-account-school-outline"
           to="/home/students"
           value="students"
@@ -39,15 +35,14 @@
           Students
         </v-list-item>
         <v-list-item
-          style="color: #3b82f6"
-          prepend-icon="mdi-text-long"
+          prepend-icon="mdi-bookshelf"
           to="/home/lessons"
           value="lessons"
         >
           Lessons
         </v-list-item>
         <v-list-item
-          style="color: #3b82f6"
+
           prepend-icon="mdi-chart-box-outline"
           to="/home/reports"
           value="reports"
@@ -56,7 +51,7 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar :elevation="3" color="#F5F7FA" scroll-behavior="fade-image">
+    <v-app-bar :elevation="3" color="#E3ECFB" scroll-behavior="fade-image">
       <v-spacer></v-spacer>
       <v-btn @click="openChangePasswordDialog" icon="mdi-lock" color="#0f172a"></v-btn>
       <v-btn @click="logout" icon="mdi-logout" color="#0f172a"></v-btn>
@@ -74,7 +69,7 @@
             :type="showCurrentPassword ? 'text' : 'password'"
             v-model="old_password"
             variant="outlined"
-            color="#3b82f6"
+            color="#5A94F3"
             :append-inner-icon="showCurrentPassword ? 'mdi-eye' : ' mdi-eye-off'"
             @click:append-inner="showCurrentPassword = !showCurrentPassword"
           ></v-text-field>
@@ -83,7 +78,7 @@
             :type="showNewPassword ? 'text' : 'password'"
             v-model="new_password"
             variant="outlined"
-            color="#3b82f6"
+            color="#5A94F3"
             :append-inner-icon="showNewPassword ? 'mdi-eye' : ' mdi-eye-off'"
             @click:append-inner="showNewPassword = !showNewPassword"
           ></v-text-field>
@@ -107,7 +102,6 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import quiz from '@/assets/quiz.png'
 import axios from 'axios'
 import {getApi} from '@/BaseUrl'
 const { url } = getApi()
@@ -223,7 +217,7 @@ Muted: #94a3b8
 */
 
 .custom-button {
-  background-color: #94a3b8 !important;
+  background-color: #5A94F3 !important;
   color: #ffffff !important;
   transition: transform 0.2s;
   border-radius: 25px;

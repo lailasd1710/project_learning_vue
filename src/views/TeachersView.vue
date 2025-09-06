@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class="teacher">
-    <h1 class="mb-12" style="color: #3b82f6; text-align: center">Teachers</h1>
+    <h1 class="mb-12" style="color: #5A94F3; text-align: center">Teachers</h1>
 
     <Teacher
       :headers="headers"
@@ -13,19 +13,19 @@
     <!-- Button to Add Teacher -->
     <v-dialog v-model="dialog" persistent style="max-width: 750px; margin: auto">
       <template v-slot:activator="{ props }">
-        <v-btn v-bind="props" class="fab fab-right" color="#3b82f6" size="60">
+        <v-btn v-bind="props" class="fab fab-right" color="#5A94F3" size="60">
           <v-icon color="white" size="30"> mdi-plus-thick </v-icon>
         </v-btn>
       </template>
       <v-card persistent>
-        <v-card-title style="color: #3b82f6; text-align: center"> Add Teacher</v-card-title>
+        <v-card-title style="color: #5A94F3; text-align: center"> Add Teacher</v-card-title>
         <v-card-text>
           <v-container>
             <v-row>
               <v-col cols="12" sm="6" md="6">
                 <v-text-field
                   variant="outlined"
-                  color="#3b82f6"
+                  color="#5A94F3"
                   v-model="newUser.name"
                   label="Name*"
                   required
@@ -34,7 +34,7 @@
               <v-col cols="12" sm="6" md="6">
                 <v-text-field
                   variant="outlined"
-                  color="#3b82f6"
+                  color="#5A94F3"
                   label="Phone number*"
                   type="phone"
                   v-model="newUser.phone"
@@ -45,7 +45,7 @@
               <v-col cols="12" sm="6" md="6">
                 <v-text-field
                   variant="outlined"
-                  color="#3b82f6"
+                  color="#5A94F3"
                   v-model="newUser.password"
                   label="Password*"
                   :append-inner-icon="passwordVisible ? 'mdi-eye' : 'mdi-eye-off'"
@@ -58,7 +58,7 @@
               <v-col cols="12" sm="6" md="6">
                 <v-text-field
                   variant="outlined"
-                  color="#3b82f6"
+                  color="#5A94F3"
                   label="Email*"
                   type="email"
                   v-model="newUser.email"
@@ -70,13 +70,13 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="#EF4444" text @click="dialog = false">Close</v-btn>
-          <v-btn color="#3b82f6" text @click="addNewTeacher">Save</v-btn>
+          <v-btn color="#5A94F3" text @click="addNewTeacher">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
     <v-dialog v-model="showRequestsDialog" max-width="600">
       <v-card>
-        <v-card-title class="text-h6" color="#3b82f6">Subjects Request</v-card-title>
+        <v-card-title class="text-h6" color="#5A94F3">Subjects Request</v-card-title>
         <v-divider></v-divider>
 
         <v-card-text>
@@ -89,7 +89,7 @@
             <v-col cols="5" class="text-right">
               <v-btn
                 size="small"
-                color="#3b82f6"
+                color="#5A94F3"
                 @click="acceptRequest(request.id)"
                 :disabled="request.status === 'accept'"
               >
@@ -97,7 +97,7 @@
               </v-btn>
               <v-btn
                 size="small"
-                color="error"
+                color="#ef4444"
                 @click="rejectRequest(request.id)"
                 :disabled="request.status === 'reject'"
               >
@@ -108,7 +108,7 @@
         </v-card-text>
 
         <v-card-actions>
-          <v-btn text @click="showRequestsDialog = false" color="#3b82f6"> Close </v-btn>
+          <v-btn text @click="showRequestsDialog = false" color="#5A94F3"> Close </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -119,7 +119,7 @@
     </div>
 
     <!-- Snackbar -->
-    <v-snackbar v-model="snackbar" :timeout="3000" color="#3b82f6" class="white-text">
+    <v-snackbar v-model="snackbar" :timeout="3000" color="#5A94F3" class="white-text">
       {{ snackbarMessage }}
     </v-snackbar>
   </v-container>
@@ -215,6 +215,7 @@ const addNewTeacher = async () => {
       snackbarMessage.value = response.data.message
       snackbar.value = true
       getTeacher()
+      newUser.value = { name: '', phone: '', password: '', email: '' }
       showSnackbar('Teacher added successfully')
     }
   } catch (error) {
@@ -282,7 +283,7 @@ onMounted(() => {
 }
 
 .custom-button {
-  background-color: #3b82f6 !important;
+  background-color: #5A94F3 !important;
   color: white !important;
   transition: transform 0.2s;
 }
@@ -296,7 +297,7 @@ onMounted(() => {
 }
 
 .custom-buttonC {
-  background-color: #3b82f6 !important;
+  background-color: #5A94F3 !important;
   color: white !important;
   transition: transform 0.2s;
   border-radius: 25px;
